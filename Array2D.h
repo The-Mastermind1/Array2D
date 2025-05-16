@@ -10,28 +10,34 @@
 _PANAGIOTIS_BEGIN
 #if __cplusplus > 202002L
 template<typename _Ty>
-class Array2D final{
+class Array2D final {
 private:
 	_Ty* Array;
 	std::size_t x, y;
 public:
 	Array2D()noexcept :Array{ nullptr }, x{ 0 }, y{ 0 } {}
-	Array2D(const std::size_t dimx, const std::size_t dimy) : x{ dimx }, y{dimy}
+	Array2D(const std::size_t dimx, const std::size_t dimy) : x{ dimx }, y{ dimy }
 	{
 		static_assert(std::is_default_constructible_v<_Ty>);
 		//the type must be default constructible 
 		Array = new _Ty[x * y]{};
-	
+
+	}
+	Array2D(_Ty* p,const std::size_t dimx,const std::size_t dimy) {
+		Array = p;
+		x = dimx;
+		y = dimy;
+
 	}
 	Array2D(const std::size_t dimx, const std::size_t dimy,
-		const _Ty& default_value) :x{ dimx }, y{dimy}
+		const _Ty& default_value) :x{ dimx }, y{ dimy }
 	{
 		static_assert(std::is_default_constructible_v<_Ty>);
 		Array = new _Ty[x * y]{};
 		std::fill_n(Array, x * y, default_value);
 
 	}
-	Array2D(const Array2D& other) :x{ other.x }, y{ other.y }, Array{nullptr} {
+	Array2D(const Array2D& other) :x{ other.x }, y{ other.y }, Array{ nullptr } {
 		if (this != &other) {
 			if (other.size() != this->size()) {
 				static_assert(std::is_default_constructible_v<_Ty>);
@@ -44,8 +50,8 @@ public:
 		}
 
 	}
-	Array2D(Array2D&& other)noexcept :x{ 0 }, y{ 0 }, Array{nullptr}
-	{ 
+	Array2D(Array2D&& other)noexcept :x{ 0 }, y{ 0 }, Array{ nullptr }
+	{
 		if (this != &other) {
 			std::swap(Array, other.Array);
 			std::swap(x, other.x);
@@ -56,7 +62,7 @@ public:
 		return x * y;
 	}
 	bool empty()const noexcept {
-		return Array==nullptr;
+		return Array == nullptr;
 	}
 	void clear()noexcept {
 		static_assert(std::is_nothrow_destructible_v<_Ty>);
@@ -70,7 +76,7 @@ public:
 	}
 	bool Allocate(const std::size_t dimx, const std::size_t dimy) {
 		if (dimx == 0 || dimy == 0)return false;
-		
+
 		static_assert(std::is_default_constructible_v<_Ty>);
 		//the type must be default constructible 
 		this->clear();
@@ -81,14 +87,14 @@ public:
 			return true;
 		}
 		else {
-			
+
 			x = y = 0;
 			return false;
 		}
 	}
 	bool Allocate(const std::size_t dimx, const std::size_t dimy,
-		const _Ty&default_value) {
-		if (dimx == 0 ||dimy == 0)return false;
+		const _Ty& default_value) {
+		if (dimx == 0 || dimy == 0)return false;
 		static_assert(std::is_default_constructible_v<_Ty>);
 		//the type must be constructible withe default value
 		this->clear();
@@ -104,7 +110,7 @@ public:
 			return false;
 		}
 	}
-	
+
 	void initialize(const _Ty& default_value) {
 		if (!empty())std::fill_n(Array, x * y, default_value);
 	}
@@ -117,16 +123,16 @@ public:
 	}
 	bool operator==(const Array2D& other)const noexcept {
 		if (x != other.x || y != other.y)return false;
-		for (std::size_t i = 0;i < size();i++) {
+		for (std::size_t i = 0; i < size(); i++) {
 			if (Array[i] != other.Array[i])return false;
 		}
 		return true;
 	}
 	template<typename _comp>
-	bool compare(const Array2D& other,_comp comp){
+	bool compare(const Array2D& other, _comp comp) {
 		if (x != other.x || y != other.y)return false;
-		for (std::size_t i = 0;i < size();i++) {
-			if (!std::invoke(comp,Array[i], other.Array[i]))return false;
+		for (std::size_t i = 0; i < size(); i++) {
+			if (!std::invoke(comp, Array[i], other.Array[i]))return false;
 		}
 		return true;
 	}
@@ -143,30 +149,30 @@ public:
 				x = other.x;
 				y = other.y;
 			}
-			
-			
+
+
 			std::copy_n(other.Array, x * y, Array);
 
 		}
 		return *this;
 	}
-	Array2D& operator = (Array2D&& other)&noexcept {
+	Array2D& operator = (Array2D&& other) & noexcept {
 		if (this != &other) {
 			this->clear();
 			std::swap(Array, other.Array);
 			std::swap(x, other.x);
 			std::swap(y, other.y);
-			
+
 		}
 		return *this;
 	}
-	_Ty& operator ()(const std::size_t dimx, const std::size_t dimy)&noexcept {
-		return Array[x *dimy + dimx];
+	_Ty& operator ()(const std::size_t dimx, const std::size_t dimy) & noexcept {
+		return Array[x * dimy + dimx];
 	}
 	const _Ty& operator ()(const std::size_t dimx, const std::size_t dimy) const& noexcept {
 		return Array[x * dimy + dimx];
 	}
-	_Ty&& operator ()(const std::size_t dimx, const std::size_t dimy)&&noexcept {
+	_Ty&& operator ()(const std::size_t dimx, const std::size_t dimy) && noexcept {
 		return Array[x * dimy + dimx];
 	}
 	const _Ty&& operator ()(const std::size_t dimx, const std::size_t dimy) const&& noexcept {
@@ -189,6 +195,28 @@ public:
 	}
 	~Array2D()noexcept {
 		this->clear();
+	}
+	Array2D<_Ty> ExtractSubArray(const size_t MinX,const size_t MinY,const size_t MaxX,
+		const size_t MaxY) const {//return by value use move semantics 
+		if (MaxX < MinX|| x<MaxX) { throw OUT_OF_BOUNDS_{"out of bounds"}; }
+		if (MaxY < MinY ||y<MaxY) { throw OUT_OF_BOUNDS_{ "out of bounds" }; }
+
+		std::size_t dimx = MaxX - MinX;
+		std::size_t dimy = MaxY - MinY;
+		if (dimx == 0 || dimy == 0)return Array2D<_Ty>{};
+		_Ty* p = new _Ty[dimx * dimy]{};
+		std::size_t count = 0;
+		for (std::size_t i = MinY; i < MaxY; i++) {
+			for (std::size_t  j= MinX; j < MaxX; j++) {
+				
+				p[count] = Array[x * i + j];
+				count++;
+			}
+		}
+		
+		return Array2D<_Ty>{p,dimx,dimy};
+
+
 	}
 
 };
