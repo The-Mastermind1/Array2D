@@ -126,7 +126,7 @@ public:
 	bool compare(const Array2D& other,_comp comp){
 		if (x != other.x || y != other.y)return false;
 		for (std::size_t i = 0;i < size();i++) {
-			if (std::invoke(comp,Array[i], other.Array[i]))return false;
+			if (!std::invoke(comp,Array[i], other.Array[i]))return false;
 		}
 		return true;
 	}
