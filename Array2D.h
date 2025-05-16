@@ -6,6 +6,9 @@
 #include<cstdlib>
 #include<type_traits>
 #include<utility>
+#include<functional>
+_PANAGIOTIS_BEGIN
+#if __cplusplus > 202002L
 template<typename _Ty>
 class Array2D final{
 private:
@@ -123,7 +126,7 @@ public:
 	bool compare(const Array2D& other,_comp comp){
 		if (x != other.x || y != other.y)return false;
 		for (std::size_t i = 0;i < size();i++) {
-			if (comp(Array[i], other.Array[i]))return false;
+			if (std::invoke(comp,Array[i], other.Array[i]))return false;
 		}
 		return true;
 	}
@@ -189,3 +192,5 @@ public:
 	}
 
 };
+#endif
+_PANAGIOTIS_END
