@@ -76,7 +76,7 @@ public:
 	}
 	bool Allocate(const std::size_t dimx, const std::size_t dimy) {
 		if (dimx == 0 || dimy == 0)return false;
-
+		if(Array!=nullptr && (dimx*dimy)==(x*y))return false;//no need to allocate memory we already have the memory 
 		static_assert(std::is_default_constructible_v<_Ty>);
 		//the type must be default constructible 
 		this->clear();
@@ -95,6 +95,10 @@ public:
 	bool Allocate(const std::size_t dimx, const std::size_t dimy,
 		const _Ty& default_value) {
 		if (dimx == 0 || dimy == 0)return false;
+		if(Array!=nullptr && (dimx*dimy)==(x*y))
+		{
+		   std::fill_n(Array, dimx * dimy, default_value);
+		}//no need to allocate memory we already have the memory 
 		static_assert(std::is_default_constructible_v<_Ty>);
 		//the type must be constructible withe default value
 		this->clear();
