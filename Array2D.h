@@ -223,6 +223,12 @@ public:
 
 
 	}
+	void show()const //use this func only to print elemets that support operator <<
+	{
+		for (std::size_t i = 0; i < size(); i++) {
+			std::cout << Array[i] << '\n';
+		}
+	}
 
 };
 #endif
