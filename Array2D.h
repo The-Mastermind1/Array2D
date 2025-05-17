@@ -98,6 +98,7 @@ public:
 		if(Array!=nullptr && (dimx*dimy)==(x*y))
 		{
 		   std::fill_n(Array, dimx * dimy, default_value);
+	           return false;
 		}//no need to allocate memory we already have the memory 
 		static_assert(std::is_default_constructible_v<_Ty>);
 		//the type must be constructible withe default value
